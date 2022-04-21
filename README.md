@@ -91,4 +91,47 @@ for i in range(n):
       count = count + dicts[-(nums3[i] + nums4[j])]//这里需要注意的是需要找出所有的可能性，因此用字典来表示合理数值出现的次数
 return count
 
+三数之和 15
+给你一个包含 n 个整数的数组 nums，判断 nums 中是否存在三个元素 a，b，c ，使得 a + b + c = 0 ？请你找出所有和为 0 且不重复的三元组。
+
+
+难度集中在不重复这个点，需要去重，通过哈希表去重细节多，这里用双指针
+步骤说明
+1.首先进行一个排序，如果第一个数都大于0，那不用玩了
+2.排序后选三个点，一个是首元素，一个是第二个元素，一个是最后一个元素
+3.第一个元素是确定搜索范围，另外两个元素是指针，如果三值之和大于0，那收缩最后一个元素，如果小于0，那前移第二个元素
+4.两个指针相等时。第一个元素就搜索完了，向前走一个。继续搜索。
+5.去重操作，去重一共有三个操作，第一个是对首元素进行去重，方法为if i > 0 and nums[i] == nums[i - 1]去重，这里i大于0是为了把i = 0时的可能元组先算上，如果直接开始i和i + 1进行判断，则会把[-1，-1，2]这种漏了（直接少一个-1则漏了，先判断在跳过第二个-1就欧克），还有一个问题在于为什么首元素不能相同，因为两个相同的首元素所搜索的可行的元组一定是前一个的首元素包含了后一个，因此第一个就够了。第二个和第三个是指针去重，如【-1，-1，-1，2，2，】，第一个-1时，第二个-1和最后一个2已经成形，当下一个-1和2时就需要跳过。
+python：
+//首先进行一波初始化
+lens = len(nums)
+result = []
+nums.sort()
+//进行初级判断
+if lens == 0:
+   return result
+if nums[0] > 0:
+   return result
+//进行筛选
+for i in range(lens):
+   left = i + 1
+   right = lens - 1
+   if i > 0 and nums[i] == nums[i - 1]://第一次去重
+      continue
+   while left < right:
+      if nums[i] + nums[left] + nums[right] > 0:
+         right -= 1
+      elif nums[i] + nums[left] + nums[right] < 0:
+         left += 1
+      else:
+         result.append([nums[i],nums[left],nums[right]])
+         while left < right and nums[left] == nums[left + 1]:
+            left += 1
+         while left < right and nums[right] == nums[right - 1]://第二次去重
+            right -= 1
+         left += 1
+         right -= 1//一次收缩
+   return result
+
+
 
