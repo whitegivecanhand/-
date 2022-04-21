@@ -133,5 +133,38 @@ for i in range(lens):
          right -= 1//一次收缩
    return result
 
+四数之和 18
+给你一个由 n 个整数组成的数组 nums ，和一个目标值 target 。请你找出并返回满足下述全部条件且不重复的四元组 [nums[a], nums[b], nums[c], nums[d]] （若两个四元组元素一一对应，则认为两个四元组重复）：
+
+这个题和三数之和解法类似，就是多套一层循环，不过需要注意的是开始的nums[0]大于目标值的判断不能用了，因为是随机的目标值如【-1，-1，0，0】，-2
+//常规初始化
+result = []
+lens = len(nums)
+nums.sort()
+for i in range(lens):
+   if i > 0 and nums[i] == nums[i - 1]://第一个数的去重
+      continue
+   for j in range(i + 1,lens):
+      if j > i + 1 and nums[j] == nums[j - 1]://第二个数的去重
+         continue
+      left = j + 1
+      right = lens - 1
+      while left < right:
+         if nums[i] + nums[j] + nums[left] + nums[right] > target:
+            right -= 1
+         elif nums[i] + nums[j] + nums[left] + nums[right] < target:
+            left += 1
+         else:
+            result.append([nums[i],nums[j],nums[left],nums[right]])
+            while left < right and nums[left] == nums[left + 1]:
+            left += 1
+         while left < right and nums[right] == nums[right - 1]://第二次去重
+            right -= 1
+         left += 1
+         right -= 1//一次收缩
+   return result
+
+
+
 
 
